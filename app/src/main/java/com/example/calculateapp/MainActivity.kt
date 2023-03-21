@@ -240,7 +240,12 @@ class MainActivity : AppCompatActivity() {
             numberPrevSymbos = "-" + numberPrevSymbos
         }
 
+        var cutStrPrevSymbol = ""
+        if (index > 0) {
+            cutStrPrevSymbol = cal.substring(0, index + 1)
+        }
 
+        var new_PrevCal = cutStrPrevSymbol
 
         return numberPrevSymbos.toInt()
     }
@@ -272,7 +277,7 @@ class MainActivity : AppCompatActivity() {
     fun checkPrevIsSymbol(cal: String): Boolean {
 
         val symbol = "+-*/"
-        if (cal.toString().equals("")) return true
+        if (cal.equals("")) return true
         return cal.last().toString() in symbol
     }
 
@@ -291,8 +296,6 @@ class MainActivity : AppCompatActivity() {
         }
         return false
     }
-
-
 
 
 }

@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         txt_Calculation.text = ""
 
         btn_1.setOnClickListener {
-                txt_Calculation.text = txt_Calculation.text.toString() + "1";
+            txt_Calculation.text = txt_Calculation.text.toString() + "1";
         }
 
         btn_2.setOnClickListener {
@@ -121,8 +121,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_0.setOnClickListener {
-            if (txt_Calculation.text.toString() != "")
-            txt_Calculation.text = txt_Calculation.text.toString() + "0";
+            if (txt_Calculation.text.toString() != "") {
+                txt_Calculation.text = txt_Calculation.text.toString() + "0";
+            }
         }
 
         btn_Del.setOnClickListener {
@@ -130,69 +131,101 @@ class MainActivity : AppCompatActivity() {
         }
 
         btn_Multiple.setOnClickListener {
-            if(!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != ""){
-                txt_Calculation.text = txt_Calculation.text.toString()+"*"
-            }else if (checkPrevIsSymbol(txt_Calculation.text.toString())){
+            if (!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != "") {
+                txt_Calculation.text = txt_Calculation.text.toString() + "*"
+            } else if (checkPrevIsSymbol(txt_Calculation.text.toString())) {
                 txt_Calculation.text = txt_Calculation.text.toString().dropLast(1)
-                txt_Calculation.text = txt_Calculation.text.toString()+"*"
+                txt_Calculation.text = txt_Calculation.text.toString() + "*"
 
             }
 
         }
 
         btn_Plus.setOnClickListener {
-            if(!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != ""){
-                txt_Calculation.text = txt_Calculation.text.toString()+"+"
-            }else if (checkPrevIsSymbol(txt_Calculation.text.toString())){
+            if (!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != "") {
+                txt_Calculation.text = txt_Calculation.text.toString() + "+"
+            } else if (checkPrevIsSymbol(txt_Calculation.text.toString())) {
                 txt_Calculation.text = txt_Calculation.text.toString().dropLast(1)
-                txt_Calculation.text = txt_Calculation.text.toString()+"+"
+                txt_Calculation.text = txt_Calculation.text.toString() + "+"
 
             }
 
         }
 
         btn_Subtract.setOnClickListener {
-            if(!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != ""){
-                txt_Calculation.text = txt_Calculation.text.toString()+"-"
-            }else if (checkPrevIsSymbol_sec(txt_Calculation.text.toString())){
-                txt_Calculation.text = txt_Calculation.text.toString()+"-"
-            }else if (txt_Calculation.text.last().toString().equals("+")){
+            if (!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != "") {
+                txt_Calculation.text = txt_Calculation.text.toString() + "-"
+            } else if (checkPrevIsSymbol_sec(txt_Calculation.text.toString())) {
+                txt_Calculation.text = txt_Calculation.text.toString() + "-"
+            } else if (txt_Calculation.text.last().toString().equals("+")) {
                 txt_Calculation.text = txt_Calculation.text.toString().dropLast(1)
-                txt_Calculation.text = txt_Calculation.text.toString()+"-"
+                txt_Calculation.text = txt_Calculation.text.toString() + "-"
 
             }
 
         }
 
         btn_Div.setOnClickListener {
-            if(!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != ""){
-                txt_Calculation.text = txt_Calculation.text.toString()+"/"
-            }else if (checkPrevIsSymbol(txt_Calculation.text.toString())){
+            if (!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != "") {
+                txt_Calculation.text = txt_Calculation.text.toString() + "/"
+            } else if (checkPrevIsSymbol(txt_Calculation.text.toString())) {
                 txt_Calculation.text = txt_Calculation.text.toString().dropLast(1)
-                txt_Calculation.text = txt_Calculation.text.toString()+"/"
+                txt_Calculation.text = txt_Calculation.text.toString() + "/"
 
             }
 
         }
 
         btn_Result.setOnClickListener {
-            txt_Calculation.text = "";
 
-            if (!checkPrevIsSymbol(txt_Calculation.text.toString()) && txt_Calculation.text.toString() != "" ){
+
+            if (checkPrevIsSymbol(txt_Calculation.text.toString()) || txt_Calculation.text.toString() == "") {
                 txt_Result.text = "ERROR"
-            }else{
-
+            } else {
+                calcFirst(txt_Calculation.text.toString())
             }
 
+            txt_Calculation.text = "";
         }
 
     }
 
-    fun calculate(cal: String) : Double {
-        var calResult:Double
+    fun calcFirst(cal: String) {
+        for (i in cal) {
+            if (isSymbol(i.toString())) {
+                var indexOfSymbol = cal.indexOf(i.toString())
+                txt_Result.text = indexOfSymbol.toString()
+            }
+        }
+    }
+
+    fun calculate(cal: String): Double {
+        var calResult: Double
 
         calResult = 0.0
 
         return calResult
     }
+
+    fun isSymbol(cal: String): Boolean {
+        var isSymbol = false
+        var symbol = "*/"
+        for (i in cal) {
+            if (i in symbol) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun getNumberPrevSymbol(position: Int, cal: String): Int {
+        var numberPrevSymbos: Int
+        numberPrevSymbos = 0
+
+
+
+        return numberPrevSymbos
+    }
+
+
 }

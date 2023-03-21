@@ -194,7 +194,7 @@ class MainActivity : AppCompatActivity() {
         for (i in cal) {
             if (isSymbol(i.toString())) {
                 var indexOfSymbol = cal.indexOf(i.toString())
-                txt_Result.text = indexOfSymbol.toString()
+                txt_Result.text=getNumberPrevSymbol(indexOfSymbol,cal).toString()+"x"+getNumberNextSymbol(indexOfSymbol,cal).toString()
             }
         }
     }
@@ -219,12 +219,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getNumberPrevSymbol(position: Int, cal: String): Int {
-        var numberPrevSymbos: Int
-        numberPrevSymbos = 0
+        var numberPrevSymbos: String
+        numberPrevSymbos = ""
+
+        var indexOfSymbol = position
+
+        var index = indexOfSymbol - 1
+
+        while (index > -1 && !checkPrevIsSymbol(cal[index].toString())){
+
+            numberPrevSymbos += cal[index].toString()
+            index--
+
+        }
+
+        numberPrevSymbos = numberPrevSymbos.reversed()
 
 
+        return numberPrevSymbos.toInt()
+    }
 
-        return numberPrevSymbos
+    fun getNumberNextSymbol(position: Int,cal: String):Int{
+        var numberNextSymbos: String
+        numberNextSymbos = ""
+
+        var indexOfSymbol = position
+
+        var index = indexOfSymbol + 1
+
+        while (index < cal.length && !checkPrevIsSymbol(cal[index].toString())){
+
+            numberNextSymbos += cal[index].toString()
+            index++
+
+        }
+
+        return numberNextSymbos.toInt()
     }
 
 

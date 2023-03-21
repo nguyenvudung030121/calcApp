@@ -6,6 +6,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,27 +54,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun checkPrevIsSymbol(cal: String): Boolean {
-
-        val symbol = "+-*/"
-        if (cal.toString().equals(""))
-            return true
-        return cal.last().toString() in symbol
-    }
-
-    fun checkPrevIsSymbol_sec(cal: String): Boolean {
-
-        val symbol = "*/"
-        if (cal.toString().equals(""))
-            return true
-        return cal.last().toString() in symbol
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
+            WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         requestWindowFeature(Window.FEATURE_NO_TITLE) //will hide the title
         supportActionBar!!.hide()
@@ -179,7 +163,10 @@ class MainActivity : AppCompatActivity() {
         btn_Result.setOnClickListener {
 
 
-            if (checkPrevIsSymbol(txt_Calculation.text.toString()) || txt_Calculation.text.toString() == "") {
+            if (checkPrevIsSymbol(txt_Calculation.text.toString()) || txt_Calculation.text.toString() == "" || checkDivWithZero(
+                    txt_Calculation.text.toString()
+                )
+            ) {
                 txt_Result.text = "ERROR"
             } else {
                 calcFirst(txt_Calculation.text.toString())
@@ -194,7 +181,21 @@ class MainActivity : AppCompatActivity() {
         for (i in cal) {
             if (isSymbol(i.toString())) {
                 var indexOfSymbol = cal.indexOf(i.toString())
-                txt_Result.text=getNumberPrevSymbol(indexOfSymbol,cal).toString()+"x"+getNumberNextSymbol(indexOfSymbol,cal).toString()
+
+                var numberPrevSymbol = getNumberPrevSymbol(indexOfSymbol, cal)
+                var numberNextSymbol = getNumberNextSymbol(indexOfSymbol, cal)
+                var miniCalcNumber: Double = 0.0
+
+                if (cal[indexOfSymbol].toString().equals("*")) {
+                    miniCalcNumber = (numberNextSymbol.toDouble() * numberPrevSymbol.toDouble())
+                } else {
+                    miniCalcNumber = (numberPrevSymbol.toDouble() / numberNextSymbol.toDouble())
+                }
+
+                miniCalcNumber = (miniCalcNumber * 100.0).roundToInt() / 100.0
+
+
+                txt_Result.text = miniCalcNumber.toString()
             }
         }
     }
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() {
 
         var index = indexOfSymbol - 1
 
-        while (index > -1 && !checkPrevIsSymbol(cal[index].toString())){
+        while (index > -1 && !checkPrevIsSymbol(cal[index].toString())) {
 
             numberPrevSymbos += cal[index].toString()
             index--
@@ -235,11 +236,16 @@ class MainActivity : AppCompatActivity() {
 
         numberPrevSymbos = numberPrevSymbos.reversed()
 
+        if (index == 0 && cal[index].toString().equals("-")) {
+            numberPrevSymbos = "-" + numberPrevSymbos
+        }
+
+
 
         return numberPrevSymbos.toInt()
     }
 
-    fun getNumberNextSymbol(position: Int,cal: String):Int{
+    fun getNumberNextSymbol(position: Int, cal: String): Int {
         var numberNextSymbos: String
         numberNextSymbos = ""
 
@@ -247,7 +253,13 @@ class MainActivity : AppCompatActivity() {
 
         var index = indexOfSymbol + 1
 
-        while (index < cal.length && !checkPrevIsSymbol(cal[index].toString())){
+        if (cal[index].toString().equals("-")) {
+            numberNextSymbos += cal[index].toString()
+            index++
+        }
+
+        while (index < cal.length && !checkPrevIsSymbol(cal[index].toString())) {
+
 
             numberNextSymbos += cal[index].toString()
             index++
@@ -256,6 +268,31 @@ class MainActivity : AppCompatActivity() {
 
         return numberNextSymbos.toInt()
     }
+
+    fun checkPrevIsSymbol(cal: String): Boolean {
+
+        val symbol = "+-*/"
+        if (cal.toString().equals("")) return true
+        return cal.last().toString() in symbol
+    }
+
+    fun checkPrevIsSymbol_sec(cal: String): Boolean {
+
+        val symbol = "*/"
+        if (cal.equals("")) return true
+        return cal.last().toString() in symbol
+    }
+
+    fun checkDivWithZero(cal: String): Boolean {
+        for (i in cal) {
+            if (i.toString().equals("/") && cal[cal.indexOf(i) + 1].toString().equals("0")) {
+                return true
+            }
+        }
+        return false
+    }
+
+
 
 
 }

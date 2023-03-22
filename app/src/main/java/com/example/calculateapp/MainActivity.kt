@@ -178,15 +178,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun calcFirst(cal: String) {
-        for (i in cal) {
-            if (isSymbol(i.toString())) {
-                var indexOfSymbol = cal.indexOf(i.toString())
 
-                var numberPrevSymbol = getNumberPrevSymbol(indexOfSymbol, cal)
-                var numberNextSymbol = getNumberNextSymbol(indexOfSymbol, cal)
+        var calculate = cal
+
+        for (i in calculate) {
+            if (isSymbol(i.toString())) {
+                var indexOfSymbol = calculate.indexOf(i.toString())
+
+                var numberPrevSymbol = getNumberPrevSymbol(indexOfSymbol, calculate)
+                var numberNextSymbol = getNumberNextSymbol(indexOfSymbol, calculate)
                 var miniCalcNumber: Double = 0.0
 
-                if (cal[indexOfSymbol].toString().equals("*")) {
+                if (calculate[indexOfSymbol].toString().equals("*")) {
                     miniCalcNumber = (numberNextSymbol.toDouble() * numberPrevSymbol.toDouble())
                 } else {
                     miniCalcNumber = (numberPrevSymbol.toDouble() / numberNextSymbol.toDouble())
@@ -195,21 +198,119 @@ class MainActivity : AppCompatActivity() {
                 miniCalcNumber = (miniCalcNumber * 100.0).roundToInt() / 100.0
 
 
-                txt_Result.text = miniCalcNumber.toString()
+                var calNumber = miniCalcNumber.toString()
+
+                var new_NextCal = getNew_NextCal(indexOfSymbol, calculate)
+                var new_PrevCal = getNew_PrevCal(indexOfSymbol, calculate)
+
+
+                if (new_PrevCal != "" && new_PrevCal.last().toString()
+                        .equals("+") && calNumber[0].toString().equals("-")
+                ) {
+                    new_PrevCal = new_PrevCal.replace("+", "")
+                }
+
+                calculate = new_PrevCal + calNumber + new_NextCal
+
+
             }
         }
+
+        txt_Result.text = last_calculate(calculate).toString()
+
     }
 
-    fun calculate(cal: String): Double {
-        var calResult: Double
+    fun last_calculate(cal: String): Double {
 
-        calResult = 0.0
+        var calculate = cal
+        var calcResult: Double = 0.0
+        for (i in calculate){
+            if (isSymbolPlusOrSubTract(i.toString()) && !i.toString().equals(calculate[0].toString())){
+                var position = calculate.indexOf(i.toString())
+                var firstVariable = getFirstVariable(position,calculate)
+                var secondVariable = getSecondVariable(position,calculate)
 
-        return calResult
+
+
+                if (calculate[position].toString().equals("+")) {
+                    calcResult = (firstVariable + secondVariable)
+                } else {
+                    calcResult = (firstVariable - secondVariable)
+                }
+
+            }
+        }
+
+        return calcResult
+    }
+
+    fun getFirstVariable(position: Int, cal: String): Double {
+
+        var numberPrevSymbos: String
+        numberPrevSymbos = ""
+
+        var indexOfSymbol = position
+
+        var index = 0
+
+        if (cal[index].toString().equals("-")) {
+            index++
+            numberPrevSymbos = "-" + numberPrevSymbos
+        }
+
+        while (index < indexOfSymbol) {
+            numberPrevSymbos += cal[index].toString()
+            index++
+        }
+
+        return numberPrevSymbos.toDouble()
+
+    }
+
+    fun getSecondVariable(position: Int,cal: String):Double{
+
+        var numberNextSymbos: String
+        numberNextSymbos = ""
+
+        var index = position + 1
+
+        while (index < cal.length && !checkPrevIsSymbol(cal[index].toString())) {
+
+            numberNextSymbos += cal[index].toString()
+            index++
+
+        }
+
+        println("HAHAHA - "+numberNextSymbos)
+
+        return numberNextSymbos.toDouble()
+
+    }
+
+//    fun countSymbolinCalc(cal: String): Int {
+//        var count = 0
+//
+//        for (i in cal) {
+//            if (checkPrevIsSymbol(i.toString())) {
+//                count++
+//            }
+//        }
+//
+//        return count
+//
+//    }
+
+    fun isSymbolPlusOrSubTract(cal: String): Boolean {
+        var symbol = "+-"
+        for (i in cal) {
+            if (i in symbol) {
+                return true
+            }
+        }
+        return false
     }
 
     fun isSymbol(cal: String): Boolean {
-        var isSymbol = false
         var symbol = "*/"
         for (i in cal) {
             if (i in symbol) {
@@ -219,7 +320,30 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-    fun getNumberPrevSymbol(position: Int, cal: String): Int {
+    fun getNumberPrevSymbol(position: Int, cal: String): Double {
+        var numberPrevSymbos: String
+        numberPrevSymbos = ""
+
+        var indexOfSymbol = position
+
+        var index = indexOfSymbol - 1
+
+        while (index > -1 && !checkPrevIsSymbol(cal[index].toString())) {
+
+            numberPrevSymbos += cal[index].toString()
+            index--
+
+        }
+        numberPrevSymbos = numberPrevSymbos.reversed()
+
+        if (index == 0) {
+            numberPrevSymbos = "-" + numberPrevSymbos
+        }
+
+        return numberPrevSymbos.toDouble()
+    }
+
+    fun getNew_PrevCal(position: Int, cal: String): String {
         var numberPrevSymbos: String
         numberPrevSymbos = ""
 
@@ -245,9 +369,8 @@ class MainActivity : AppCompatActivity() {
             cutStrPrevSymbol = cal.substring(0, index + 1)
         }
 
-        var new_PrevCal = cutStrPrevSymbol
 
-        return numberPrevSymbos.toInt()
+        return cutStrPrevSymbol
     }
 
     fun getNumberNextSymbol(position: Int, cal: String): Int {
@@ -273,6 +396,37 @@ class MainActivity : AppCompatActivity() {
 
         return numberNextSymbos.toInt()
     }
+
+    fun getNew_NextCal(position: Int, cal: String): String {
+        var numberNextSymbos: String
+        numberNextSymbos = ""
+
+        var indexOfSymbol = position
+
+        var index = indexOfSymbol + 1
+
+        if (cal[index].toString().equals("-")) {
+            numberNextSymbos += cal[index].toString()
+            index++
+        }
+
+        while (index < cal.length && !checkPrevIsSymbol(cal[index].toString())) {
+
+
+            numberNextSymbos += cal[index].toString()
+            index++
+
+        }
+
+
+        var cutStrNextSymbol = ""
+        if (index < cal.length) {
+            cutStrNextSymbol = cal.substring(index, cal.length)
+        }
+
+        return cutStrNextSymbol
+    }
+
 
     fun checkPrevIsSymbol(cal: String): Boolean {
 

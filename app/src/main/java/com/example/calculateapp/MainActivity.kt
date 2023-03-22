@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btn_9: Button
     private lateinit var btn_0: Button
     private lateinit var btn_Del: Button
+    private lateinit var btn_delete: Button
     private lateinit var btn_Result: Button
     private lateinit var btn_Multiple: Button
     private lateinit var btn_Plus: Button
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         btn_8 = findViewById(R.id.btn_8)
         btn_9 = findViewById(R.id.btn_9)
         btn_0 = findViewById(R.id.btn_0)
+        btn_delete = findViewById(R.id.btn_del)
 
         btn_Del = findViewById(R.id.btn_delete)
         btn_Plus = findViewById(R.id.btn_plus)
@@ -112,6 +114,11 @@ class MainActivity : AppCompatActivity() {
 
         btn_Del.setOnClickListener {
             txt_Calculation.text = "";
+        }
+
+        btn_delete.setOnClickListener{
+            if (txt_Calculation.text.toString() != "")
+            txt_Calculation.text = txt_Calculation.text.toString().substring(0,txt_Calculation.text.toString().length-1)
         }
 
         btn_Multiple.setOnClickListener {

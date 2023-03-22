@@ -225,12 +225,12 @@ class MainActivity : AppCompatActivity() {
         var calculate = cal
         var calcResult: Double = 0.0
         for (i in calculate){
-            if (isSymbolPlusOrSubTract(i.toString()) && !i.toString().equals(calculate[0].toString())){
+
+            //-2 dau tru thi index = 0
+            if (isSymbolPlusOrSubTract(i.toString()) && calculate.indexOf(i.toString()) != 0){
                 var position = calculate.indexOf(i.toString())
                 var firstVariable = getFirstVariable(position,calculate)
                 var secondVariable = getSecondVariable(position,calculate)
-
-
 
                 if (calculate[position].toString().equals("+")) {
                     calcResult = (firstVariable + secondVariable)

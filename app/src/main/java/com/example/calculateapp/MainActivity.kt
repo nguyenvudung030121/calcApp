@@ -224,13 +224,15 @@ class MainActivity : AppCompatActivity() {
 
         var calculate = cal
         var calcResult: Double = 0.0
-        for (i in calculate){
 
-            //-2 dau tru thi index = 0
-            if (isSymbolPlusOrSubTract(i.toString()) && calculate.indexOf(i.toString()) != 0){
-                var position = calculate.indexOf(i.toString())
-                var firstVariable = getFirstVariable(position,calculate)
-                var secondVariable = getSecondVariable(position,calculate)
+        var i = 0
+
+        while (i < calculate.length) {
+            if (isSymbolPlusOrSubTract(calculate[i].toString()) && i != 0) {
+                var position = i
+
+                var firstVariable = getFirstVariable(position, calculate)
+                var secondVariable = getSecondVariable(position, calculate)
 
                 if (calculate[position].toString().equals("+")) {
                     calcResult = (firstVariable + secondVariable)
@@ -238,10 +240,18 @@ class MainActivity : AppCompatActivity() {
                     calcResult = (firstVariable - secondVariable)
                 }
 
+                var new_experession = cutExpressionAfterSecondVariable(position, calculate)
+
+
+                calculate = calcResult.toString() + new_experession
+
+                println("JHAHA -- "+calculate)
+                i=-1
             }
+            i++
         }
 
-        return calcResult
+        return calculate.toDouble()
     }
 
     fun getFirstVariable(position: Int, cal: String): Double {
@@ -267,7 +277,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun getSecondVariable(position: Int,cal: String):Double{
+    fun getSecondVariable(position: Int, cal: String): Double {
 
         var numberNextSymbos: String
         numberNextSymbos = ""
@@ -281,24 +291,26 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        println("HAHAHA - "+numberNextSymbos)
 
         return numberNextSymbos.toDouble()
 
     }
 
-//    fun countSymbolinCalc(cal: String): Int {
-//        var count = 0
-//
-//        for (i in cal) {
-//            if (checkPrevIsSymbol(i.toString())) {
-//                count++
-//            }
-//        }
-//
-//        return count
-//
-//    }
+    fun cutExpressionAfterSecondVariable(position: Int, cal: String): String {
+
+        var expression: String
+        expression = ""
+
+        var index = position + 1
+
+        for (i in index..cal.length - 1) {
+            if (isSymbolPlusOrSubTract(cal[i].toString())) {
+                expression = cal.substring(i)
+                break
+            }
+        }
+        return expression
+    }
 
     fun isSymbolPlusOrSubTract(cal: String): Boolean {
         var symbol = "+-"
